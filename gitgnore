@@ -1,0 +1,15 @@
+# Ignorar arquivos SQL de backup
+*.bak
+
+# Ignorar arquivos de log
+*.log
+
+# Ignorar arquivos temporários
+*.tmp
+
+# Ignorar arquivos específicos de editor
+*.swp
+*.swo
+
+# Ignorar arquivos de banco de dados temporários
+*.db
