@@ -1,0 +1,92 @@
+-- Passo 1: Criar o banco de dados
+REMOVER BANCO DE DADOS SE EXISTIR Biblioteca;
+DEFINIR SQL_SAFE_UPDATES = 0;
+CRIAR BANCO DE DADOS Biblioteca;
+USE Biblioteca;
+
+-- Passo 2: Criar uma tabela de autores
+CRIAR TABELA Autores (
+    AutorID INT AUTO_INCREMENT CHAVE PRIMÁRIA,
+    Nome VARCHAR(100) NÃO NULO,
+    Nacionalidade VARCHAR(100)
+);
+
+-- Passo 3: Criar uma tabela de Livros
+CRIAR TABELA Livros (
+    LivroID INT AUTO_INCREMENT CHAVE PRIMÁRIA,
+    Título VARCHAR(255) NOT NULL,
+    AutorID INT,
+    AnoPublicacao ANO,
+    Gênero VARCHAR(50),
+    CHAVE ESTRANGEIRA (AutorID) REFERÊNCIAS Autores(AutorID)
+);
+
+-- Passo 4: Criar uma tabela de Empréstimos
+CRIAR TABELA Emprestimos (
+    EmprestimoID INT AUTO_INCREMENT CHAVE PRIMÁRIA,
+    LivroID INT,
+    DataEmprestimo DATA NÃO NULA,
+    DataDevolução DATA,
+    NomeUsuário VARCHAR(100) NOT NULL,
+    CHAVE ESTRANGEIRA (LivroID) REFERÊNCIAS Livros (LivroID)
+);
+
+-- Passo 5: Inserir dados na tabela Autores
+INSERT INTO Autores (Nome, Nacionalidade) VALORES
+('Gabriel Garcia Márquez', 'Colombiano'),
+('J. K. Rowling', 'Britânica'),
+('George Orwell', 'Britânico'),
+('Margaret Atwood', 'Canadense'),
+('Harper Lee', 'Americana');
+
+-- Passo 6: Inserir dados na tabela Livros
+INSERT INTO Livros (Titulo, AutorID, AnoPublicacao, Genero) VALORES
+('Cem Anos de Solidão', 1, 1967, 'Ficção'),
+('Harry Potter e a Pedra Filosofal', 2, 1997, 'Fantasia'),
+('1984', 3, 1949, 'Distopia'),
+('O Conto da Aia', 4, 1985, 'Distopia'),
+('O Sol é Para Todos', 5, 1960, 'Drama'),
+('A Menina que Roubava Livros', 2, 2005, 'Ficção Histórica'),
+('O Código Da Vinci', 2, 2003, 'Suspense'),
+('O Hobbit', 2, 1937, 'Fantasia'),
+('Matar um Mockingbird', 5, 1960, 'Drama'),
+('O Grande Gatsby', 5, 1925, 'Romance');
+
+-- Passo 7: Inserir dados na tabela Emprestimos
+INSERT INTO Emprestimos (LivroID, DataEmprestimo, DataDevolucao, NomeUsuario) VALORES
+(1, '2024-08-01', NULL, 'João Silva'),
+(2, '2024-08-10', '2024-08-20', 'Maria Oliveira'),
+(3, '2024-08-15', NULO, 'Carlos Santos'),
+(4, '2024-08-05', '2024-08-25', 'Ana Paula'),
+(5, '2024-08-18', NULO, 'Roberto Lima');
+
+-- Consultas de Dados
+
+-- Listar todos os livros com os nomes de seus autores
+SELECT Livros.Titulo, Autores.Nome AS Autor, Livros.AnoPublicacao
+DE Livros
+JOIN Autores ON Livros.AutorID = Autores.AutorID;
+
+-- Listar os empréstimos que ainda estão em aberto
+SELECT Emprestimos.EmprestimoID, Livros.Titulo, Emprestimos.DataEmprestimo, Emprestimos.NomeUsuario
+DE Emprestimos
+INSCREVA-SE Livros ON Emprestimos.LivroID = Livros.LivroID
+ONDE Emprestimos.DataDevolucao É NULO;
+
+-- Atualização de Dados
+
+-- Atualizar os dados de devolução de um empréstimo específico
+ATUALIZAÇÃO Emprestimos
+SET DataDevolucao = '2024-08-22'
+ONDE EmprestimoID = 1;
+
+-- Exclusão de Dados
+
+-- Remover um livro e os registros de empréstimos associados a ele
+-- Primeiro, removemos os empréstimos associados ao livro
+APAGAR DE Emprestimos
+ONDE LivroID = 1;
+
+-- Em seguida, removemos o livro
+APAGAR DE Livros
+ONDE LivroID = 1;
